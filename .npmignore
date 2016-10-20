@@ -1,0 +1,6 @@
+test
+examples
+node_modules
+npm-debug.log
+.npmignore
+.gitignore

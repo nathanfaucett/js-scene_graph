@@ -1,0 +1,42 @@
+{
+  "name": "@nathanfaucett/scene_graph",
+  "version": "0.0.1",
+  "description": "scene_graph",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nathanfaucett/js-scene_graph.git"
+  },
+  "main": "src/index.js",
+  "keywords": [
+    "scene_graph",
+    "scene_graph.js",
+    "scene",
+    "graph"
+  ],
+  "scripts": {
+    "test": "npm run test-node",
+    "test-node": "node ./test | ./node_modules/.bin/tap-spec",
+    "test-node-raw": "node ./test",
+    "test-browser-local": "zuul --local 9999 --ui tape -- ./test"
+  },
+  "author": "Nathan Faucett",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "devDependencies": {
+    "@nathanfaucett/task": "^0.0.7",
+    "gulp-jsbeautifier": "^2.0.3",
+    "gulp-jshint": "^2.0.1",
+    "jshint": "^2.9.3",
+    "tap-spec": "^4.1.0",
+    "tape": "^4.2.0",
+    "zuul": "^3.11.0"
+  },
+  "dependencies": {
+    "@nathanfaucett/class": "git@github.com:nathanfaucett/js-class.git",
+    "@nathanfaucett/index_of": "^0.0.1",
+    "@nathanfaucett/is_null_or_undefined": "0.0.1",
+    "@nathanfaucett/is_string": "0.0.1",
+    "@nathanfaucett/now": "0.0.3",
+    "@nathanfaucett/uuid": "^0.0.2"
+  }
+}
