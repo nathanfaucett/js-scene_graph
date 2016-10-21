@@ -29,7 +29,6 @@ function Scene() {
     this.plugins = {};
 
     this._initted = false;
-    this._awakened = false;
 }
 
 Class.extend(Scene, "scene_graph.Scene");
@@ -46,7 +45,6 @@ ScenePrototype.construct = function(name) {
     this.time.construct();
 
     this._initted = false;
-    this._awakened = false;
 
     return this;
 };
@@ -69,7 +67,6 @@ ScenePrototype.destructor = function() {
 
     this.name = null;
     this._initted = false;
-    this._awakened = false;
 
     return this;
 };
@@ -77,19 +74,12 @@ ScenePrototype.destructor = function() {
 ScenePrototype.init = function() {
     if (!this._initted) {
         this._initted = true;
+        sortComponentManagers(this);
         this.sortComponentManagers();
+        this.initPlugins();
+        this.initComponentManagers();
+        this.initEntities();
         this.emit("init");
-    }
-    return this;
-};
-
-ScenePrototype.awake = function() {
-    if (!this._awakened) {
-        this._awakened = true;
-        this.awakePlugins();
-        this.awakeComponentManagers();
-        this.awakeEntities();
-        this.emit("awake");
     }
     return this;
 };
@@ -106,14 +96,15 @@ ScenePrototype.update = function() {
 
 ScenePrototype.clear = function(emitEvent) {
     var entities = this.entities,
-        i = -1,
-        il = entities.length - 1,
-        entity;
+        plugins = this._plugins,
+        i, il, entity;
 
     if (emitEvent !== false) {
         this.emit("clear");
     }
 
+    i = -1;
+    il = entities.length - 1;
     while (i++ < il) {
         entity = entities[i];
 
@@ -122,7 +113,10 @@ ScenePrototype.clear = function(emitEvent) {
         }
     }
 
-    this.destroyPlugins(emitEvent);
+    i = plugins.length;
+    while (i--) {
+        plugins[i].destroy(emitEvent).destructor();
+    }
 
     return this;
 };
@@ -225,10 +219,14 @@ ScenePrototype._addComponent = function(component) {
         componentManagerHash[componentManagerHash.length] = manager;
         managerHash[className] = manager;
 
-        sortComponentManagers(this);
 
-        manager.onAddToScene();
-        manager.init();
+        if (this._initted) {
+            sortComponentManagers(this);
+            manager.onAddToScene();
+            manager.init();
+        } else {
+            manager.onAddToScene();
+        }
 
         this.emit("addComponentManager", manager);
     }
@@ -239,11 +237,8 @@ ScenePrototype._addComponent = function(component) {
     this.emit("add." + className, component);
 
     if (this._initted) {
-        component.init();
-    }
-    if (this._awakened) {
         manager.sort();
-        component.awake();
+        component.init();
     }
 
     return this;
@@ -256,6 +251,7 @@ ScenePrototype.removeEntity = function() {
     while (i++ < il) {
         Scene_removeEntity(this, arguments[i]);
     }
+
     return this;
 };
 
@@ -340,10 +336,6 @@ ScenePrototype._removeComponent = function(component) {
         }
     }
 
-    if (this._awakened) {
-        component.clear();
-    }
-
     return this;
 };
 
@@ -392,18 +384,11 @@ ScenePrototype.sortComponentManagers = function() {
     return this.forEachComponentManager(sortComponentManagers_callback);
 };
 
-function awakeComponentManagers_callback(manager) {
-    manager.awake();
+function initEntities_callback(entity) {
+    entity.emit("init");
 }
-ScenePrototype.awakeComponentManagers = function() {
-    return this.forEachComponentManager(awakeComponentManagers_callback);
-};
-
-function awakeEntities_callback(entity) {
-    entity.emit("awake");
-}
-ScenePrototype.awakeEntities = function() {
-    return this.forEachEntity(awakeEntities_callback);
+ScenePrototype.initEntities = function() {
+    return this.forEachEntity(initEntities_callback);
 };
 
 function updateEntities_callback(entity) {
@@ -418,13 +403,6 @@ function updateComponentManagers_callback(manager) {
 }
 ScenePrototype.updateComponentManagers = function() {
     return this.forEachComponentManager(updateComponentManagers_callback);
-};
-
-function destroyComponentManagers_callback(manager) {
-    manager.destroy();
-}
-ScenePrototype.destroyComponentManagers = function() {
-    return this.forEachComponentManager(destroyComponentManagers_callback);
 };
 
 ScenePrototype.forEachEntity = function(fn) {
@@ -473,7 +451,9 @@ function ScenePrototype_addPlugin(_this, plugin) {
         plugin.scene = _this;
         plugins[plugins.length] = plugin;
         pluginHash[className] = plugin;
-        plugin.init();
+        if (_this._initted) {
+            plugin.init();
+        }
         _this.emit("addPlugin", plugin);
     } else {
         throw new Error(
@@ -523,37 +503,26 @@ ScenePrototype.getPlugin = function(name) {
 function clearPlugins_callback(plugin) {
     plugin.clear(clearPlugins_callback.emitEvents);
 }
-clearPlugins_callback.set = function set(emitEvents) {
+clearPlugins_callback.set = function(emitEvents) {
     this.emitEvents = emitEvents;
     return this;
 };
-ScenePrototype.clearPlugins = function clearPlugins(emitEvents) {
+ScenePrototype.clearPlugins = function(emitEvents) {
     return this.forEachPlugin(clearPlugins_callback.set(emitEvents));
 };
 
-function awakePlugins_callback(plugin) {
-    plugin.awake();
+function initPlugins_callback(plugin) {
+    plugin.init();
 }
-ScenePrototype.awakePlugins = function awakePlugins() {
-    return this.forEachPlugin(awakePlugins_callback);
+ScenePrototype.initPlugins = function() {
+    return this.forEachPlugin(initPlugins_callback);
 };
 
 function updatePlugins_callback(plugin) {
     plugin.update();
 }
-ScenePrototype.updatePlugins = function updatePlugins() {
+ScenePrototype.updatePlugins = function() {
     return this.forEachPlugin(updatePlugins_callback);
-};
-
-function destroyPlugins_callback(plugin) {
-    plugin.destroy();
-}
-destroyPlugins_callback.set = function(emitEvent) {
-    this.emitEvent = emitEvent;
-    return this;
-};
-ScenePrototype.destroyPlugins = function(emitEvent) {
-    return this.forEachPlugin(destroyPlugins_callback.set(emitEvent));
 };
 
 ScenePrototype.forEachPlugin = function(fn) {

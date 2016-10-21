@@ -21,11 +21,6 @@ PluginPrototype.init = function init() {
     return this;
 };
 
-PluginPrototype.awake = function awake() {
-    this.emit("awake");
-    return this;
-};
-
 PluginPrototype.clear = function clear(emitEvent) {
     if (emitEvent !== false) {
         this.emit("clear");

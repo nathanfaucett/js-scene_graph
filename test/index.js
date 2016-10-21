@@ -16,15 +16,16 @@ tape("scene_graph", function(assert) {
 
     entity1.addChild(entity2);
 
-    entity.forEachChild(function(child, index /*, parent */ ) {
-        assert.equals(index, 0);
+    var depth = 0;
+    assert.equals(entity.depth, depth++);
+    entity.forEachChild(function(child /*, index, parent */ ) {
+        assert.equals(child.depth, depth++);
     }, true);
 
     scene.addEntity(entity);
     scene.addPlugin(plugin);
 
     scene.init();
-    scene.awake();
     scene.update();
 
     assert.equals(scene.hasEntity(entity), true);
@@ -36,7 +37,7 @@ tape("scene_graph", function(assert) {
     var newScene = new sg.Scene().fromJSON(scene.toJSON()),
         newEntity = newScene.getEntityByName("Entity");
 
-    scene.destroy();
+    scene.clear();
 
     assert.equals(newScene.hasEntity(newEntity), true);
     assert.equals(newScene.hasEntityWithName("Entity2"), true);

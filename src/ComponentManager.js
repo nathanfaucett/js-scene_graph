@@ -77,18 +77,6 @@ ComponentManagerPrototype.init = function() {
     return this;
 };
 
-ComponentManagerPrototype.awake = function() {
-    var components = this._components,
-        i = -1,
-        il = components.length - 1;
-
-    while (i++ < il) {
-        components[i].awake();
-    }
-
-    return this;
-};
-
 ComponentManagerPrototype.update = function() {
     var components = this._components,
         i = -1,

@@ -52,11 +52,6 @@ ComponentPrototype.init = function() {
     return this;
 };
 
-ComponentPrototype.awake = function() {
-    this.emit("awake");
-    return this;
-};
-
 ComponentPrototype.clear = function(emitEvent) {
     if (emitEvent !== false) {
         this.emit("clear");
