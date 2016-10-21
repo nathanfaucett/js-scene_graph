@@ -16,6 +16,7 @@ function Scene() {
 
     Class.call(this);
 
+    this.name = null;
     this.time = Time.create();
 
     this.entities = [];
