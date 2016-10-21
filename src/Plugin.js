@@ -1,7 +1,8 @@
 var Class = require("@nathanfaucett/class");
 
 
-var PluginPrototype;
+var ClassPrototype = Class.prototype,
+    PluginPrototype;
 
 
 module.exports = Plugin;
@@ -15,6 +16,22 @@ function Plugin() {
 }
 Class.extend(Plugin, "scene_graph.Plugin");
 PluginPrototype = Plugin.prototype;
+
+PluginPrototype.construct = function() {
+
+    ClassPrototype.construct.call(this);
+
+    return this;
+};
+
+PluginPrototype.destructor = function() {
+
+    ClassPrototype.destructor.call(this);
+
+    this.scene = null;
+
+    return this;
+};
 
 PluginPrototype.init = function init() {
     this.emit("init");

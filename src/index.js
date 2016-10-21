@@ -1,9 +1,9 @@
-var scenegraph = exports;
+var sceneGraph = exports;
 
 
-scenegraph.Component = require("./Component");
-scenegraph.ComponentManager = require("./ComponentManager");
-scenegraph.Entity = require("./Entity");
-scenegraph.Plugin = require("./Plugin");
-scenegraph.Scene = require("./Scene");
-scenegraph.Time = require("./Time");
+sceneGraph.Component = require("./Component");
+sceneGraph.ComponentManager = require("./ComponentManager");
+sceneGraph.Entity = require("./Entity");
+sceneGraph.Plugin = require("./Plugin");
+sceneGraph.Scene = require("./Scene");
+sceneGraph.Time = require("./Time");
