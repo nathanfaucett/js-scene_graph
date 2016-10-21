@@ -34,13 +34,13 @@ PluginPrototype.destructor = function() {
 };
 
 PluginPrototype.init = function init() {
-    this.emit("init");
+    this.emitArg("init");
     return this;
 };
 
 PluginPrototype.clear = function clear(emitEvent) {
     if (emitEvent !== false) {
-        this.emit("clear");
+        this.emitArg("clear");
     }
     return this;
 };

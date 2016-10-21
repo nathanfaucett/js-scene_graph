@@ -66,7 +66,7 @@ EntityPrototype.destroy = function(emitEvent) {
 
     if (scene) {
         if (emitEvent !== false) {
-            this.emit("destroy");
+            this.emitArg("destroy");
         }
         scene.removeEntity(this);
     }
@@ -204,7 +204,7 @@ function Entity_addChild(_this, entity) {
             scene.addEntity(entity);
         }
 
-        _this.emit("addChild", entity);
+        _this.emitArg("addChild", entity);
     } else {
         throw new Error(
             "Entity add(...entities) trying to add object " +
@@ -228,7 +228,7 @@ function Entity_removeChild(_this, entity) {
         index = indexOf(children, entity);
 
     if (index !== -1) {
-        _this.emit("removeChild", entity);
+        _this.emitArg("removeChild", entity);
 
         children.splice(index, 1);
 

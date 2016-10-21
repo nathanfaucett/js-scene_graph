@@ -48,13 +48,13 @@ ComponentPrototype.destructor = function() {
 };
 
 ComponentPrototype.init = function() {
-    this.emit("init");
+    this.emitArg("init");
     return this;
 };
 
 ComponentPrototype.clear = function(emitEvent) {
     if (emitEvent !== false) {
-        this.emit("clear");
+        this.emitArg("clear");
     }
     return this;
 };
@@ -68,7 +68,7 @@ ComponentPrototype.destroy = function(emitEvent) {
 
     if (entity) {
         if (emitEvent !== false) {
-            this.emit("destroy");
+            this.emitArg("destroy");
         }
         entity.removeComponent(this);
         this.clear(false);

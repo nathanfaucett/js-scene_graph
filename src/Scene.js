@@ -80,7 +80,7 @@ ScenePrototype.init = function() {
         this.initPlugins();
         this.initComponentManagers();
         this.initEntities();
-        this.emit("init");
+        this.emitArg("init");
     }
     return this;
 };
@@ -101,7 +101,7 @@ ScenePrototype.clear = function(emitEvent) {
         i, il, entity;
 
     if (emitEvent !== false) {
-        this.emit("clear");
+        this.emitArg("clear");
     }
 
     i = -1;
@@ -124,7 +124,7 @@ ScenePrototype.clear = function(emitEvent) {
 
 ScenePrototype.destroy = function(emitEvent) {
     if (emitEvent !== false) {
-        this.emit("destroy");
+        this.emitArg("destroy");
     }
     this.clear(false);
     return this;
@@ -180,7 +180,7 @@ function Scene_addEntity(_this, entity) {
         Scene_addComponents(_this, entity._components);
         Scene_addChildren(_this, entity.children);
 
-        _this.emit("addEntity", entity);
+        _this.emitArg("addEntity", entity);
     } else {
         throw new Error(
             "Scene addEntity(...entities) Trying to add Entity that is " +
@@ -229,13 +229,13 @@ ScenePrototype._addComponent = function(component) {
             manager.onAddToScene();
         }
 
-        this.emit("addComponentManager", manager);
+        this.emitArg("addComponentManager", manager);
     }
 
     manager.addComponent(component);
     component.manager = manager;
 
-    this.emit("add." + className, component);
+    this.emitArg("add." + className, component);
 
     if (this._initted) {
         manager.sort();
@@ -263,7 +263,7 @@ function Scene_removeEntity(_this, entity) {
         entityNameHash;
 
     if (entityHash[id]) {
-        _this.emit("removeEntity", entity);
+        _this.emitArg("removeEntity", entity);
 
         if (isString(entity.name)) {
             entityNameHash = _this._entityNameHash;
@@ -319,14 +319,14 @@ ScenePrototype._removeComponent = function(component) {
         manager = managerHash[className];
 
     if (manager) {
-        this.emit("remove." + className, component);
+        this.emitArg("remove." + className, component);
 
         manager.removeComponent(component);
         component.manager = null;
 
         if (manager.isEmpty()) {
             manager.onRemoveFromScene();
-            this.emit("removeComponentManager", manager);
+            this.emitArg("removeComponentManager", manager);
 
             manager.scene = null;
             componentManagerHash.splice(
@@ -386,14 +386,14 @@ ScenePrototype.sortComponentManagers = function() {
 };
 
 function initEntities_callback(entity) {
-    entity.emit("init");
+    entity.emitArg("init");
 }
 ScenePrototype.initEntities = function() {
     return this.forEachEntity(initEntities_callback);
 };
 
 function updateEntities_callback(entity) {
-    entity.emit("update");
+    entity.emitArg("update");
 }
 ScenePrototype.updateEntities = function() {
     return this.forEachEntity(updateEntities_callback);
@@ -455,7 +455,7 @@ function ScenePrototype_addPlugin(_this, plugin) {
         if (_this._initted) {
             plugin.init();
         }
-        _this.emit("addPlugin", plugin);
+        _this.emitArg("addPlugin", plugin);
     } else {
         throw new Error(
             "Scene addPlugin(...plugins) trying to add plugin " +
@@ -481,7 +481,7 @@ function ScenePrototype_removePlugin(_this, plugin) {
         className = plugin.className;
 
     if (pluginHash[className]) {
-        _this.emit("removePlugin", plugin);
+        _this.emitArg("removePlugin", plugin);
         plugin.scene = null;
         plugins.splice(indexOf(plugins, plugin), 1);
         delete pluginHash[className];
