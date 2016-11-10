@@ -108,8 +108,6 @@ function Entity_addComponent(_this, component) {
         if (scene) {
             scene._addComponent(component);
         }
-
-        component.init();
     } else {
         throw new Error(
             "Entity addComponent(...components) trying to add " +

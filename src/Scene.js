@@ -76,6 +76,10 @@ ScenePrototype.destructor = function() {
     return this;
 };
 
+ScenePrototype.isInitted = function() {
+    return this._initted;
+};
+
 ScenePrototype.init = function() {
     if (!this._initted) {
         this._initted = true;
