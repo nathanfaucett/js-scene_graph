@@ -16,6 +16,8 @@ function Scene() {
 
     Class.call(this);
 
+    this.application = null;
+
     this.name = null;
     this.time = Time.create();
 
@@ -65,6 +67,8 @@ ScenePrototype.destructor = function() {
     while (i--) {
         plugins[i].destroy(false).destructor();
     }
+
+    this.application = null;
 
     this.name = null;
     this._initted = false;
