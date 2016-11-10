@@ -32,7 +32,7 @@
     "zuul": "^3.11.0"
   },
   "dependencies": {
-    "@nathanfaucett/class": "git@github.com:nathanfaucett/js-class.git",
+    "@nathanfaucett/class": "git://github.com/nathanfaucett/js-class.git",
     "@nathanfaucett/index_of": "^0.0.1",
     "@nathanfaucett/is_null_or_undefined": "0.0.1",
     "@nathanfaucett/is_string": "0.0.1",
