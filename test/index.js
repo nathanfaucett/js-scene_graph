@@ -1,14 +1,20 @@
 var tape = require("tape"),
-    sg = require("..");
+    sceneGraph = require("..");
+
+
+var Scene = sceneGraph.Scene,
+    Entity = sceneGraph.Entity,
+    Component = sceneGraph.Component,
+    Plugin = sceneGraph.Plugin;
 
 
 tape("scene_graph", function(assert) {
-    var scene = sg.Scene.create("Scene"),
-        entity = sg.Entity.create("Entity"),
-        entity1 = sg.Entity.create("Entity1"),
-        entity2 = sg.Entity.create("Entity2"),
-        component = sg.Component.create(),
-        plugin = sg.Plugin.create();
+    var scene = Scene.create("Scene"),
+        entity = Entity.create("Entity"),
+        entity1 = Entity.create("Entity1"),
+        entity2 = Entity.create("Entity2"),
+        component = Component.create(),
+        plugin = Plugin.create();
 
     entity
         .addComponent(component)
@@ -34,7 +40,7 @@ tape("scene_graph", function(assert) {
     assert.equals(entity.hasComponent(component.className), true);
     assert.equals(scene.hasPlugin(plugin.className), true);
 
-    var newScene = new sg.Scene().fromJSON(scene.toJSON()),
+    var newScene = Scene.create().fromJSON(scene.toJSON()),
         newEntity = newScene.getEntityByName("Entity");
 
     scene.clear();
@@ -44,6 +50,8 @@ tape("scene_graph", function(assert) {
     assert.equals(newScene.hasComponentManager(component.className), true);
     assert.equals(newEntity.hasComponent(component.className), true);
     assert.equals(newScene.hasPlugin(plugin.className), true);
+
+    newScene.clear();
 
     assert.end();
 });

@@ -139,7 +139,7 @@ ScenePrototype.destroy = function(emitEvent) {
 };
 
 ScenePrototype.hasEntity = function(entity) {
-    return !!this._entityHash[entity._id];
+    return !!this._entityHash[entity.getId()];
 };
 
 ScenePrototype.hasEntityWithName = function(name) {
@@ -164,7 +164,7 @@ ScenePrototype.addEntity = function() {
 function Scene_addEntity(_this, entity) {
     var entities = _this.entities,
         entityHash = _this._entityHash,
-        id = entity._id,
+        id = entity.getId(),
         entityNameHash;
 
     if (!entityHash[id]) {
@@ -267,7 +267,7 @@ ScenePrototype.removeEntity = function() {
 function Scene_removeEntity(_this, entity) {
     var entities = _this.entities,
         entityHash = _this._entityHash,
-        id = entity._id,
+        id = entity.getId(),
         entityNameHash;
 
     if (entityHash[id]) {
@@ -592,20 +592,22 @@ ScenePrototype.fromJSON = function(json) {
     this.time.fromJSON(json.time);
 
     i = -1;
-    il = jsonEntities.length - 1;
-    while (i++ < il) {
-        entity = new Entity();
-        entity.fromJSON(jsonEntities[i]);
-        this.addEntity(entity);
-    }
-
-    i = -1;
     il = jsonPlugins.length - 1;
     while (i++ < il) {
         jsonPlugin = jsonPlugins[i];
         plugin = Class.newClass(jsonPlugin.className);
+        plugin.scene = this;
         plugin.fromJSON(jsonPlugin);
         this.addPlugin(plugin);
+    }
+
+    i = -1;
+    il = jsonEntities.length - 1;
+    while (i++ < il) {
+        entity = Entity.create();
+        entity.scene = this;
+        entity.fromJSON(jsonEntities[i]);
+        this.addEntity(entity);
     }
 
     return this;

@@ -175,13 +175,13 @@ EntityPrototype.addChild = function() {
         il = arguments.length - 1;
 
     while (i++ < il) {
-        Entity_addChild(this, arguments[i]);
+        Entity_addChild(this, arguments[i], true);
     }
 
     return this;
 };
 
-function Entity_addChild(_this, entity) {
+function Entity_addChild(_this, entity, addToScene) {
     var children = _this.children,
         index = indexOf(children, entity),
         scene;
@@ -198,7 +198,7 @@ function Entity_addChild(_this, entity) {
 
         Entity_updateDepth(entity, _this.depth + 1);
 
-        if ((scene = _this.scene)) {
+        if (addToScene && (scene = _this.scene)) {
             scene.addEntity(entity);
         }
 
@@ -301,6 +301,7 @@ EntityPrototype.fromJSON = function(json) {
     while (i++ < il) {
         json = jsonComponents[i];
         component = Class.newClass(json.className);
+        component.entity = this;
         component.fromJSON(json);
         this.addComponent(component);
     }
@@ -308,9 +309,10 @@ EntityPrototype.fromJSON = function(json) {
     i = -1;
     il = jsonChildren.length - 1;
     while (i++ < il) {
-        entity = new Entity();
+        entity = Entity.create();
+        entity.scene = this.scene;
         entity.fromJSON(jsonChildren[i]);
-        this.addChild(entity);
+        Entity_addChild(this, entity, false);
     }
 
     return this;
