@@ -98,7 +98,6 @@ ScenePrototype.update = function() {
     this.time.update();
     this.updatePlugins();
     this.updateComponentManagers();
-    this.updateEntities();
 
     return this;
 };
@@ -398,13 +397,6 @@ function initEntities_callback(entity) {
 }
 ScenePrototype.initEntities = function() {
     return this.forEachEntity(initEntities_callback);
-};
-
-function updateEntities_callback(entity) {
-    entity.emitArg("update");
-}
-ScenePrototype.updateEntities = function() {
-    return this.forEachEntity(updateEntities_callback);
 };
 
 function updateComponentManagers_callback(manager) {
