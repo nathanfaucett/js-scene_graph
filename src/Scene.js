@@ -216,16 +216,16 @@ function Scene_addChildren(_this, children) {
 
 ScenePrototype._addComponent = function(component) {
     var className = component.className,
-        managerHash = this.componentManagers,
-        componentManagerHash = this._componentManagers,
-        manager = managerHash[className];
+        componentManagerHash = this.componentManagers,
+        componentManagerArray = this._componentManagers,
+        manager = componentManagerHash[className];
 
     if (!manager) {
         manager = component.ComponentManager.create();
 
         manager.scene = this;
-        componentManagerHash[componentManagerHash.length] = manager;
-        managerHash[className] = manager;
+        componentManagerArray[componentManagerArray.length] = manager;
+        componentManagerHash[className] = manager;
 
 
         if (this._initted) {
@@ -321,9 +321,9 @@ function Scene_removeChildren(_this, children) {
 
 ScenePrototype._removeComponent = function(component) {
     var className = component.className,
-        managerHash = this.componentManagers,
-        componentManagerHash = this._componentManagers,
-        manager = managerHash[className];
+        componentManagerHash = this.componentManagers,
+        componentManagerArray = this._componentManagers,
+        manager = componentManagerHash[className];
 
     if (manager) {
         this.emitArg("remove." + className, component);
@@ -336,11 +336,11 @@ ScenePrototype._removeComponent = function(component) {
             this.emitArg("removeComponentManager", manager);
 
             manager.scene = null;
-            componentManagerHash.splice(
-                indexOf(componentManagerHash, manager),
+            componentManagerArray.splice(
+                indexOf(componentManagerArray, manager),
                 1
             );
-            delete managerHash[className];
+            delete componentManagerHash[className];
         }
     }
 
@@ -420,12 +420,12 @@ ScenePrototype.forEachEntity = function(fn) {
 };
 
 ScenePrototype.forEachComponentManager = function(fn) {
-    var componentManagerHash = this._componentManagers,
+    var componentManagerArray = this._componentManagers,
         i = -1,
-        il = componentManagerHash.length - 1;
+        il = componentManagerArray.length - 1;
 
     while (i++ < il) {
-        if (fn(componentManagerHash[i]) === false) {
+        if (fn(componentManagerArray[i]) === false) {
             break;
         }
     }
