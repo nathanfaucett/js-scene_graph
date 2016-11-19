@@ -45,6 +45,7 @@ tape("scene_graph", function(assert) {
 
     scene.clear();
 
+    assert.equals(newScene.time.frame, 1);
     assert.equals(newScene.hasEntity(newEntity), true);
     assert.equals(newScene.hasEntityWithName("Entity2"), true);
     assert.equals(newScene.hasComponentManager(component.className), true);

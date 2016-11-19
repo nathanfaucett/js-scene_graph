@@ -16,7 +16,7 @@ function Time() {
         globalFixed = 1 / 60,
         fixedDelta = 1 / 60,
 
-        frameCount = 0,
+        frame = 0,
         last = -1 / 60,
         current = 0,
         delta = 1 / 60,
@@ -26,10 +26,10 @@ function Time() {
         MIN_DELTA = 0.000001,
         MAX_DELTA = 1;
 
-    this.time = 0;
+    this.current = 0;
     this.fps = 60;
     this.delta = 1 / 60;
-    this.frameCount = 0;
+    this.frame = 0;
 
     this.start = function() {
         return LOCAL_START_TIME;
@@ -40,9 +40,9 @@ function Time() {
     };
 
     this.update = function() {
-        _this.frameCount = frameCount++;
+        _this.frame = ++frame;
 
-        last = _this.time;
+        last = _this.current;
         current = _this.now();
 
         fpsFrame++;
@@ -56,15 +56,7 @@ function Time() {
         delta = (current - last) * _this.scale;
         _this.delta = delta < MIN_DELTA ? MIN_DELTA : delta > MAX_DELTA ? MAX_DELTA : delta;
 
-        _this.time = current;
-    };
-
-    this.setStartTime = function(value) {
-        LOCAL_START_TIME = value;
-    };
-
-    this.setFrame = function(value) {
-        frameCount = value;
+        _this.current = current;
     };
 
     this.scale = scale;
@@ -81,12 +73,12 @@ function Time() {
 
     this.construct = function() {
         LOCAL_START_TIME = now() * 0.001;
-        frameCount = 0;
+        frame = 0;
 
-        _this.time = 0;
+        _this.current = 0;
         _this.fps = 60;
         _this.delta = 1 / 60;
-        _this.frameCount = frameCount;
+        _this.frame = frame;
 
         _this.setScale(1);
         _this.setFixedDelta(1 / 60);
@@ -97,7 +89,7 @@ function Time() {
         json = json || {};
 
         json.start = _this.start();
-        json.frameCount = _this.frameCount;
+        json.frame = _this.frame;
         json.scale = _this.scale;
         json.fixedDelta = _this.fixedDelta;
 
@@ -108,8 +100,8 @@ function Time() {
 
         json = json || {};
 
-        _this.setStartTime(json.start);
-        _this.setFrame(json.frameCount);
+        LOCAL_START_TIME = json.start;
+        _this.frame = frame = json.frame;
         _this.setScale(json.scale);
         _this.setFixedDelta(json.fixedDelta);
 
